@@ -20,8 +20,34 @@ local function showChatGPTDialog(ui, highlightedText, message_history)
     ui.document:getProps().authors or _("Unknown Author")
   local message_history = message_history or {{
     role = "system",
-    content = "The following is a conversation with an AI assistant. The assistant is helpful, creative, clever, and very friendly. Answer as concisely as possible."
-  }}
+    content = [[The following is a conversation with an AI assistant. 
+    The assistant is helpful, creative, clever, and very friendly. 
+    In case the user writes a question, answer it concisely. You also listen to these shortcuts:
+    s - summarize the text
+    t - translate the text to German
+    
+    For the summarization features, follow these rules:
+    
+    Take a deep breath and think step by step about how to best accomplish this goal using the following steps.
+
+    # OUTPUT SECTIONS
+
+    - Combine all of your understanding of the content into a single, 20-word sentence in a section called ONE SENTENCE SUMMARY:.
+
+    - Output the 10 most important points of the content as a list with no more than 15 words per point into a section called MAIN POINTS:.
+
+    - Output a list of the 5 best takeaways from the content in a section called TAKEAWAYS:.
+
+    # OUTPUT INSTRUCTIONS
+
+    - Create the output using the formatting above.
+    - You only output human readable Markdown.
+    - Output numbered lists, not bullets.
+    - Do not output warnings or notes—just the requested sections.
+    - Do not repeat items in the output sections.
+    - Do not start items with the same opening words.
+]]
+    }}
   local input_dialog
   input_dialog = InputDialog:new{
     title = _("Ask a question about the highlighted text"),
@@ -64,12 +90,12 @@ local function showChatGPTDialog(ui, highlightedText, message_history)
           }
 
           table.insert(message_history, answer_message)
-          local result_text = _("Highlighted text: ") .. "\"" .. highlightedText .. "\"" .. "\n\n" .. _("User: ") ..
+          local result_text = _("User: ") ..
                                 question .. "\n\n" .. _("ChatGPT: ") .. answer
 
           local function createResultText(highlightedText, message_history)
-            local result_text = _("Highlighted text: ") .. "\"" .. highlightedText .. "\"\n\n"
-
+--[[             local result_text = _("Highlighted text: ") .. "\"" .. highlightedText .. "\"\n\n" ]]
+            local result_text = ""
             for i = 3, #message_history do
               if message_history[i].role == "user" then
                 result_text = result_text .. _("User: ") .. message_history[i].content .. "\n\n"
